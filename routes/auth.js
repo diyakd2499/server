@@ -29,24 +29,24 @@ router.post('/register', async (req, res) => {
         if (user) return res.status(400).json({ message: 'البريد الإلكتروني مسجل مسبقاً' });
 
         // تشفير الباسورد
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+       // const salt = await bcrypt.genSalt(10);
+        //const hashedPassword = await bcrypt.hash(password, salt);
 
         // إنشاء الكود
         const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         // إنشاء المستخدم
-        user = new User({
-            name,
-            email,
-            phone,
-            password: hashedPassword,
-            role: role || 'client',
-            isVerified: false,
-            verificationCode
-        });
+       user = new User({
+    name,
+    email,
+    phone,
+    password: password, // 👈 التغيير هنا: نرسل الباسورد كما هو، والموديل سيتولى تشفيره
+    role: role || 'client',
+    isVerified: false,
+    verificationCode
+});
 
-        await user.save(); // ✅ تم الحفظ بنجاح هنا
+await user.save();✅ تم الحفظ بنجاح هنا
 
         // 👇👇 التعديل الجذري هنا 👇👇
         
