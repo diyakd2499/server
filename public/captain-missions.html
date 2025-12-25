@@ -33,7 +33,7 @@
 
         async function fetchMissions() {
             try {
-                const response = await fetch('http://localhost:5000/api/orders/my-missions', {
+                const response = await fetch('/api/orders/my-missions', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
