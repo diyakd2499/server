@@ -58,7 +58,7 @@ function login() {
     const phone = document.getElementById('phone').value;
     const password = document.getElementById('password').value;
 
-    fetch('http://localhost:5000/api/auth/login', {
+    fetch('/api/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
