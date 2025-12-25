@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حساب جديد | وصل-لي</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-box">
+        <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 20px;">
+            <span>وصل-لي</span>
+        </a>
+        
+        <div id="register-step">
+            <h2>إنشاء حساب عميل 👤</h2>
+            <div class="input-group">
+                <label>الاسم</label>
+                <input type="text" id="name" placeholder="محمد أحمد">
+            </div>
+            <div class="input-group">
+                <label>الهاتف (09 أو 01)</label>
+                <input type="text" id="phone" placeholder="09xxxxxxxx">
+            </div>
+            <div class="input-group">
+                <label>الإيميل</label>
+                <input type="email" id="email" placeholder="name@example.com">
+            </div>
+            <div class="input-group">
+                <label>كلمة المرور</label>
+                <input type="password" id="password" placeholder="******">
+            </div>
+            <button class="btn-block btn-primary" onclick="registerStep()">إرسال الكود</button>
+            <p style="margin-top: 20px;">لديك حساب؟ <a href="client-login.html" style="font-weight:bold;">دخول</a></p>
+        </div>
+
+        <div id="verify-step" style="display: none;">
+            <h2>تأكيد الإيميل 📧</h2>
+            <p>أدخل الكود المرسل إلى بريدك</p>
+            
+            <div class="input-group">
+                <input type="text" id="verificationCode" placeholder="xxxxxx" style="text-align:center; letter-spacing: 5px; font-size: 20px;">
+            </div>
+
+            <button class="btn-block btn-primary" onclick="verifyStep()">تفعيل الحساب</button>
+            
+            <div style="margin-top: 20px;">
+                <button id="resendBtn" onclick="resendCode()" style="background:none; border:none; color:gray; cursor:not-allowed;" disabled>
+                    إعادة إرسال الكود (<span id="timer">30</span>)
+                </button>
+            </div>
+        </div>
+
+        <div id="error" style="color:red; margin-top:15px; font-size:14px; display:none; font-weight:bold;"></div>
+    </div>
+</div>
+
+<script>
+    let countdownInterval;
+
+    function startTimer() {
+        let timeLeft = 30; // 30 ثانية
+        const btn = document.getElementById('resendBtn');
+        const timerSpan = document.getElementById('timer');
+        
+        btn.disabled = true;
+        btn.style.color = "gray";
+        btn.style.cursor = "not-allowed";
+        
+        clearInterval(countdownInterval); 
+        
+        countdownInterval = setInterval(() => {
+            timeLeft--;
+            timerSpan.innerText = timeLeft;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                btn.disabled = false;
+                btn.style.color = "var(--primary)";
+                btn.style.cursor = "pointer";
+                btn.innerText = "إعادة إرسال الكود الآن";
+            }
+        }, 1000);
+    }
+
+    async function registerStep() {
+        const name = document.getElementById('name').value;
+        const phone = document.getElementById('phone').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('error');
+        
+        errorDiv.style.display = 'none';
+
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, email, password, role: 'client' })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                document.getElementById('register-step').style.display = 'none';
+                document.getElementById('verify-step').style.display = 'block';
+                startTimer(); // ⏰ بدء العداد عند النجاح
+                alert("تم إرسال الكود!");
+            } else {
+                errorDiv.innerText = data.message;
+                errorDiv.style.display = 'block';
+            }
+        } catch (err) { errorDiv.innerText = "خطأ اتصال"; errorDiv.style.display = 'block'; }
+    }
+
+    // دالة إعادة الإرسال
+    async function resendCode() {
+        document.getElementById('timer').innerText = "30"; 
+        registerStep(); // إعادة طلب التسجيل
+    }
+
+    async function verifyStep() {
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('verificationCode').value;
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/verify-email', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, code })
+            });
+            const data = await res.json();
+            if(res.ok) {
+                localStorage.setItem('clientToken', data.token);
+                window.location.href = 'client-orders.html';
+            } else {
+                alert(data.message);
+            }
+        } catch(err) { alert("خطأ"); }
+    }
+</script>
+
+</body>
+</html>

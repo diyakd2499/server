@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول العملاء | وصل-لي</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="auth-box">
+       <a class="logo">
+    <img src="logo.png" alt="شعار وصل-لي" s> </a>
+        
+        <h2>أهلاً بك! 👋</h2>
+
+        <div id="alert-box" style="display:none; padding: 10px; margin-bottom: 15px; border-radius: 5px; font-weight: bold; text-align: center;"></div>
+        
+        <div class="input-group">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="name@example.com">
+        </div>
+        
+        <div class="input-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="password" placeholder="******">
+        </div>
+
+        <button class="btn-block btn-primary" onclick="login()">تسجيل الدخول</button>
+        
+        <div style="margin-top: 20px; font-size: 14px;">
+            <p><a href="forgot-password.html" style="color: #7f8c8d;">نسيت كلمة المرور؟</a></p>
+            <p>جديد معنا؟ <a href="client-register.html" style="color: var(--primary); font-weight: bold;">أنشئ حساب جديد</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // دالة لإظهار التنبيهات الملونة
+    function showAlert(msg, type) {
+        const box = document.getElementById('alert-box');
+        box.style.display = 'block';
+        box.innerText = msg;
+        
+        if (type === 'success') {
+            // لون أخضر للنجاح
+            box.style.backgroundColor = '#d4edda';
+            box.style.color = '#155724';
+            box.style.border = '1px solid #c3e6cb';
+        } else {
+            // لون أحمر للخطأ
+            box.style.backgroundColor = '#f8d7da';
+            box.style.color = '#721c24';
+            box.style.border = '1px solid #f5c6cb';
+        }
+    }
+
+    async function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        // إخفاء التنبيه القديم عند المحاولة الجديدة
+        document.getElementById('alert-box').style.display = 'none';
+
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }) 
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                // التأكد من أن الدور هو عميل (Client)
+                if (data.user.role === 'client' || data.user.role === 'customer') {
+                    // ✅ 1. إظهار رسالة النجاح الخضراء
+                    showAlert("تم تسجيل الدخول بنجاح! 🚀", "success");
+
+                    // 2. حفظ البيانات
+                    localStorage.setItem('clientToken', data.token);
+                    localStorage.setItem('userName', data.user.name);
+
+                    // 3. الانتظار ثانيتين ثم التحويل (ليقرأ المستخدم الرسالة)
+                    setTimeout(() => {
+                        window.location.href = 'client-orders.html';
+                    }, 2000);
+                } else {
+                    showAlert("عذراً، هذا الحساب ليس حساب عميل", "error");
+                }
+            } else {
+                // ❌ إظهار رسالة الخطأ الحمراء (من السيرفر)
+                showAlert(data.message || 'بيانات الدخول غير صحيحة', "error");
+            }
+        } catch (err) {
+            showAlert("خطأ في الاتصال بالسيرفر", "error");
+        }
+    }
+</script>
+
+</body>
+</html>

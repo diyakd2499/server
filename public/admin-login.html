@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول الإدارة | وَصِّلِي</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            direction: rtl;
+        }
+        .login-box {
+            background: white;
+            padding: 40px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        h2 { color: #2c3e50; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #34495e; }
+        .error { color: #e74c3c; margin-top: 15px; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="login-box">
+    <h2>👑 دخول المدير العام</h2>
+    <input type="text" id="phone" placeholder="رقم الهاتف (0000000000)">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button onclick="adminLogin()">تسجيل الدخول</button>
+    <div class="error" id="error-msg">بيانات الدخول غير صحيحة!</div>
+</div>
+
+<script>
+    async function adminLogin() {
+        // التعديل هنا: نأخذ قيمة الهاتف
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('password').value;
+        const errorMsg = document.getElementById('error-msg');
+
+        try {
+            const res = await fetch('http://localhost:5000/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // التعديل هنا: نرسل phone بدلاً من email
+                body: JSON.stringify({ phone, password }) 
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                if (data.user.role === 'admin') {
+                    localStorage.setItem('adminToken', data.token);
+                    window.location.href = 'admin.html';
+                } else {
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "عذراً، هذا الحساب ليس حساب مسؤول!";
+                }
+            } else {
+                errorMsg.style.display = 'block';
+                errorMsg.innerText = data.message || "خطأ في الدخول";
+            }
+        } catch (err) {
+            console.error(err);
+            errorMsg.style.display = 'block';
+            errorMsg.innerText = "خطأ في الاتصال بالسيرفر";
+        }
+    }
+</script>
+
+</body>
+</html>

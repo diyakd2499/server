@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>الأسعار | وصل-لي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* تنسيقات خاصة بصفحة الأسعار */
+        .page-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .page-header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .page-header p { font-size: 1.2rem; opacity: 0.9; }
+
+        .pricing-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* شبكة الكروت */
+        .factors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .factor-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            border: 1px solid #eee;
+            transition: 0.3s;
+        }
+
+        .factor-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+        .factor-icon { font-size: 40px; margin-bottom: 15px; }
+        .factor-card h3 { color: var(--secondary); margin-bottom: 10px; }
+        .factor-card p { color: #666; font-size: 14px; }
+
+        /* جدول الأسعار التقريبي */
+        .price-table-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .price-table th {
+            background: var(--secondary);
+            color: white;
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+
+        .price-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .price-highlight { color: var(--primary); font-size: 1.2rem; }
+
+        .payment-note {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: bold;
+            border: 1px solid #ffeeba;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="logo.png" alt="شعار وصل-لي">
+        </a>
+        
+        <nav class="nav-links">
+            <a href="index.html">الرئيسية</a>
+            <a href="client-login.html" class="btn-main">اطلب الآن</a>
+        </nav>
+    </header>
+
+    <section class="page-header">
+        <h1>سياسة التسعير العادلة ⚖️</h1>
+        <p>نظام مرن يضمن حق الكابتن ويوفر على العميل</p>
+    </section>
+
+    <div class="pricing-container">
+        
+        <h2 style="text-align: center; color: var(--secondary); margin-bottom: 30px;">كيف نحسب السعر؟</h2>
+        <div class="factors-grid">
+            <div class="factor-card">
+                <div class="factor-icon">📏</div>
+                <h3>المسافة</h3>
+                <p>كلما زادت المسافة، زاد السعر قليلاً. نقسم المشاوير إلى (قريبة، متوسطة، وبعيدة) لتسهيل الحساب.</p>
+            </div>
+            <div class="factor-card">
+                <div class="factor-icon">🚲</div>
+                <h3>وسيلة النقل</h3>
+                <p>التوصيل بالعجلة الهوائية أوفر في المسافات القصيرة، والموتر أسرع للمسافات البعيدة.</p>
+            </div>
+            <div class="factor-card">
+                <div class="factor-icon">🕒</div>
+                <h3>وقت الذروة</h3>
+                <p>نحاول تثبيت الأسعار، لكن قد تزيد قليلاً في أوقات الزحام الشديد لضمان توفر الكباتن.</p>
+            </div>
+        </div>
+
+        <div class="price-table-section">
+            <h3>💸 أمثلة للأسعار التقريبية (داخل أم درمان)</h3>
+            <p style="color:#777; margin-bottom:20px;">هذه الأسعار تقديرية وقد تختلف قليلاً حسب الاتفاق</p>
+            <p style="color:#777; margin-bottom:20px;"> السعر التقريبي هو سعر مثال وينصح برفع السعر لضمان قبول الطلبية بشكل اسرع </p>
+
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>نوع المشوار</th>
+                        <th>مثال</th>
+                        <th>السعر التقريبي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🚲 مشوار قريب</td>
+                        <td>داخل الحي </td>
+                        <td class="price-highlight">3,000 ج.س</td>
+                    </tr>
+                    <tr>
+                        <td>🛵 مشوار وسط</td>
+                        <td>من حارة لحارة /مثال: من العرضه للعباسية</td>
+                        <td class="price-highlight">6,000 ج.س</td>
+                    </tr>
+                    <tr>
+                        <td>🏎️ مشوار بعيد</td>
+                        <td>أطراف أم درمان  </td>
+                        <td class="price-highlight">10,000 ج.س</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="payment-note">
+            ⚠️ ملاحظة هامة: الدفع حالياً "كاش" (نقدًا) فقط عند الاستلام للكابتن مباشرة.
+        </div>
+
+        <div style="text-align: center; margin: 50px 0;">
+            <h3>عجبتك الأسعار؟</h3>
+            <a href="client-login.html" class="btn-main" style="padding: 15px 40px; font-size: 1.2rem;">ابدأ طلبك الآن 🚀</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة © 2025 نظام وصل-لي</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | وَصِّلِي</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; direction: rtl; }
+        
+        /* القائمة الجانبية */
+        .sidebar { width: 250px; background: #2c3e50; color: white; height: 100vh; position: fixed; padding: 20px; box-sizing: border-box; }
+        .sidebar h2 { text-align: center; margin-bottom: 30px; color: #ecf0f1; }
+        .sidebar button { width: 100%; padding: 12px; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 10px; cursor: pointer; text-align: right; border-radius: 5px; transition: 0.3s; }
+        .sidebar button:hover { background: rgba(255,255,255,0.1); }
+        .sidebar .logout { background: #c0392b; border: none; margin-top: 20px; text-align: center; }
+        
+        /* المحتوى الرئيسي */
+        .content { margin-right: 250px; padding: 30px; }
+        
+        /* بطاقات الإحصائيات */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-bottom: 4px solid #3498db; }
+        .card h3 { margin: 0; color: #7f8c8d; font-size: 14px; }
+        .card .number { font-size: 32px; font-weight: bold; color: #2c3e50; margin: 10px 0; }
+        .card.revenue { border-bottom-color: #27ae60; }
+        .card.revenue .number { color: #27ae60; }
+
+        /* الجداول */
+        h2.section-title { margin-top: 40px; margin-bottom: 15px; color: #34495e; border-bottom: 2px solid #ddd; padding-bottom: 10px; display: inline-block; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        th, td { padding: 15px; text-align: center; border-bottom: 1px solid #eee; }
+        th { background: #34495e; color: white; font-weight: normal; }
+        tr:hover { background-color: #f9f9f9; }
+
+        /* أزرار الجدول */
+        .btn-toggle { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 14px; }
+        .btn-active { background-color: #e74c3c; } /* لون زر التعطيل */
+        .btn-inactive { background-color: #27ae60; } /* لون زر التفعيل */
+        
+        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .active-badge { background: #e8f8f5; color: #27ae60; }
+        .inactive-badge { background: #fdedec; color: #e74c3c; }
+
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>👑 لوحة التحكم</h2>
+        <p style="text-align: center; font-size: 14px; opacity: 0.7;">المدير العام</p>
+        <hr style="opacity: 0.2;">
+        
+        <button onclick="scrollToSection('stats')">📊 الإحصائيات</button>
+        <button onclick="scrollToSection('users')">👥 إدارة المستخدمين</button>
+        <button onclick="scrollToSection('orders')">📦 آخر الطلبات</button>
+        
+        <button class="logout" onclick="logout()">تسجيل خروج 🔒</button>
+    </div>
+
+    <div class="content">
+        
+        <div id="stats">
+            <h1>نظرة عامة</h1>
+            <div class="stats-grid">
+                <div class="card">
+                    <h3>👥 عدد العملاء</h3>
+                    <div class="number" id="count-customers">...</div>
+                </div>
+                <div class="card">
+                    <h3>🚴‍♂️ عدد الكباتن</h3>
+                    <div class="number" id="count-captains">...</div>
+                </div>
+                <div class="card">
+                    <h3>📦 إجمالي الطلبات</h3>
+                    <div class="number" id="count-orders">...</div>
+                </div>
+                <div class="card revenue">
+                    <h3>💰 الأرباح المحققة</h3>
+                    <div class="number" id="total-revenue">...</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title" id="users">👥 إدارة المستخدمين (الكباتن والعملاء)</h2>
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>الهاتف</th>
+                    <th>الدور</th>
+                    <th>الحالة</th>
+                    <th>إجراء</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="5">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+
+        <h2 class="section-title" id="orders">📦 آخر 5 طلبات في النظام</h2>
+        <table id="ordersTable">
+            <thead>
+                <tr>
+                    <th>العميل</th>
+                    <th>الكابتن</th>
+                    <th>من</th>
+                    <th>إلى</th>
+                    <th>السعر</th>
+                    <th>الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="6">جاري التحميل...</td></tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <script>
+        // التحقق من التوكن (أدمن فقط)
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = 'admin-login.html'; // توجيه لصفحة دخول الأدمن الصحيحة
+        }
+
+        // جلب البيانات الشاملة (داشبورد)
+        async function loadDashboard() {
+            try {
+                // 1. جلب الإحصائيات والطلبات
+                const resStats = await fetch('http://localhost:5000/api/admin/dashboard', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                if (resStats.status === 403) {
+                    alert("غير مصرح لك بالدخول!");
+                    logout();
+                    return;
+                }
+                
+                const data = await resStats.json();
+
+                // تعبئة الإحصائيات
+                document.getElementById('count-customers').innerText = data.stats.customers;
+                document.getElementById('count-captains').innerText = data.stats.captains;
+                document.getElementById('count-orders').innerText = data.stats.orders;
+                document.getElementById('total-revenue').innerText = data.stats.revenue + ' ج.س';
+
+                // تعبئة جدول الطلبات
+                const ordersBody = document.querySelector('#ordersTable tbody');
+                ordersBody.innerHTML = '';
+                data.recentOrders.forEach(order => {
+                    ordersBody.innerHTML += `
+                        <tr>
+                            <td>${order.customer ? order.customer.name : 'مجهول'}</td>
+                            <td>${order.captain ? order.captain.name : '---'}</td>
+                            <td>${order.pickupLocation}</td>
+                            <td>${order.dropoffLocation}</td>
+                            <td>${order.price}</td>
+                            <td>${translateStatus(order.status)}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // جلب المستخدمين (لجدول الإدارة)
+        async function loadUsers() {
+            try {
+                const resUsers = await fetch('http://localhost:5000/api/admin/users', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const users = await resUsers.json();
+                
+                const usersBody = document.querySelector('#usersTable tbody');
+                usersBody.innerHTML = '';
+
+                users.forEach(user => {
+                    if (user.role === 'admin') return; // لا تعرض الأدمن في القائمة
+
+                    usersBody.innerHTML += `
+                        <tr>
+                            <td>${user.name}</td>
+                            <td>${user.phone}</td>
+                            <td>
+                                <span style="font-weight:bold; color:${user.role === 'captain' ? '#d35400' : '#2980b9'}">
+                                    ${user.role === 'captain' ? '🚴‍♂️ كابتن' : '👤 عميل'}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-badge ${user.isActive ? 'active-badge' : 'inactive-badge'}">
+                                    ${user.isActive ? 'نشط' : 'معطل'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-toggle ${user.isActive ? 'btn-active' : 'btn-inactive'}" 
+                                        onclick="toggleUserStatus('${user._id}')">
+                                    ${user.isActive ? 'تعطيل الحساب' : 'تفعيل الحساب'}
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // دالة تغيير حالة المستخدم (تفعيل/تعطيل)
+        async function toggleUserStatus(id) {
+            if(!confirm("هل أنت متأكد من تغيير حالة هذا المستخدم؟")) return;
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/user/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                
+                if (res.ok) {
+                    loadUsers(); // إعادة تحميل الجدول لتحديث الحالة
+                    loadDashboard(); // تحديث الإحصائيات (قد يتغير العدد النشط)
+                } else {
+                    alert("حدث خطأ");
+                }
+            } catch (err) {
+                alert("خطأ في الاتصال");
+            }
+        }
+
+        function translateStatus(status) {
+            const map = {
+                'pending': '⏳ انتظار',
+                'accepted': '🚴‍♂️ جاري التوصيل',
+                'delivered': '✅ تم التسليم',
+                'cancelled': '❌ ملغي'
+            };
+            return map[status] || status;
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'admin-login.html';
+        }
+
+        // تشغيل الدوال عند فتح الصفحة
+        loadDashboard();
+        loadUsers();
+
+    </script>
+
+</body>
+</html>

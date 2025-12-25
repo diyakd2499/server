@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلباتي | وصل-لي</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;900&display=swap" rel="stylesheet">
+    <style>
+        .order-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-right: 5px solid #ddd;
+            transition: 0.3s;
+        }
+        .order-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        /* ألوان الحالات */
+        .status-pending { border-right-color: #f39c12; }   /* برتقالي */
+        .status-accepted { border-right-color: #3498db; }  /* أزرق */
+        .status-delivered { border-right-color: #27ae60; } /* أخضر */
+        .status-cancelled { border-right-color: #e74c3c; } /* أحمر */
+
+        .status-badge {
+            display: inline-block; padding: 5px 10px; border-radius: 15px;
+            font-size: 12px; font-weight: bold; color: white;
+        }
+        .bg-pending { background-color: #f39c12; }
+        .bg-accepted { background-color: #3498db; }
+        .bg-delivered { background-color: #27ae60; }
+        .bg-cancelled { background-color: #e74c3c; }
+
+        .order-route { display: flex; align-items: center; gap: 10px; margin: 15px 0; font-size: 14px; }
+        .arrow { color: #aaa; font-size: 18px; }
+        .price-tag { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+    </style>
+</head>
+<body style="background-color: #f4f6f9;">
+
+    <header>
+        <a href="" class="logo">
+    <img src="logo.png" alt="شعار وصل-لي"> </a>
+        <nav class="nav-links">
+            <a href="client-orders.html" class="btn-main">➕ طلب جديد</a>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+        <h2 style="font-family:'Cairo'; text-align:center; margin-bottom:30px;">📦 سجل طلباتي</h2>
+        
+        <div id="orders-list">
+            <p style="text-align:center;">جاري تحميل الطلبات...</p>
+        </div>
+    </div>
+
+<script>
+    const token = localStorage.getItem('clientToken');
+    if (!token) window.location.href = 'client-login.html';
+
+    async function loadOrders() {
+        try {
+            // جلب الطلبات من السيرفر
+            const res = await fetch('http://localhost:5000/api/orders/my-orders', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const orders = await res.json();
+            
+            const container = document.getElementById('orders-list');
+            container.innerHTML = '';
+
+            if (orders.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:40px; color:#777; background:white; border-radius:10px;">ليس لديك طلبات سابقة 📭 <br><br> <a href="client-orders.html" style="color:var(--primary);">ابدأ بطلب كابتن الآن</a></div>';
+                return;
+            }
+
+            orders.forEach(order => {
+                const statusMap = {
+                    'pending': { text: '⏳ في انتظار الموافقة', class: 'status-pending', bg: 'bg-pending' },
+                    'accepted': { text: '🚴‍♂️ الكابتن في الطريق', class: 'status-accepted', bg: 'bg-accepted' },
+                    'delivered': { text: '✅ تم التوصيل', class: 'status-delivered', bg: 'bg-delivered' },
+                    'cancelled': { text: '❌ ملغي', class: 'status-cancelled', bg: 'bg-cancelled' }
+                };
+
+                const st = statusMap[order.status] || statusMap['pending'];
+                const date = new Date(order.createdAt).toLocaleDateString('ar-EG');
+                const pickupAddr = order.pickup ? order.pickup.address : 'غير محدد';
+                const dropoffAddr = order.dropoff ? order.dropoff.address : 'غير محدد';
+
+                // 🔥 زر الإلغاء: يظهر فقط إذا كانت الحالة pending
+                let cancelButton = '';
+                if (order.status === 'pending') {
+                    cancelButton = `
+                        <button onclick="cancelOrder('${order._id}')" 
+                                style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:12px; margin-top:10px;">
+                            ❌ إلغاء الطلب
+                        </button>
+                    `;
+                }
+
+                const html = `
+                    <div class="order-card ${st.class}">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span class="status-badge ${st.bg}">${st.text}</span>
+                            <span style="font-size:12px; color:#777;">${date}</span>
+                        </div>
+                        
+                        <div class="order-route">
+                            <span style="font-weight:bold;">🟢 ${pickupAddr}</span>
+                            <span class="arrow">⬅️</span>
+                            <span style="font-weight:bold;">🏁 ${dropoffAddr}</span>
+                        </div>
+
+                        <div style="font-size:13px; color:#555; margin-bottom:10px; background:#f9f9f9; padding:10px; border-radius:5px;">
+                            📝 ${order.details}
+                        </div>
+
+                        <div style="border-top:1px solid #eee; padding-top:10px; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span class="price-tag">${order.price} جنيه</span>
+                                <div style="font-size:12px; color:#777;">المسافة: ${translateDistance(order.distanceType)}</div>
+                            </div>
+                            ${cancelButton} </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById('orders-list').innerHTML = '<p style="color:red; text-align:center;">فشل تحميل الطلبات</p>';
+        }
+    }
+
+    // دالة ترجمة المسافة
+    function translateDistance(type) {
+        if(type === 'short') return 'قريب';
+        if(type === 'medium') return 'وسط';
+        if(type === 'long') return 'بعيد';
+        return type;
+    }
+
+    // 🔥 دالة إلغاء الطلب الجديدة
+    async function cancelOrder(orderId) {
+        if(!confirm("هل أنت متأكد من إلغاء هذا الطلب؟")) return;
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+
+            if (res.ok) {
+                alert("تم إلغاء الطلب بنجاح");
+                loadOrders(); // إعادة تحميل القائمة لتحديث الحالة
+            } else {
+                alert(data.message);
+            }
+        } catch (err) {
+            alert("خطأ في الاتصال");
+        }
+    }
+
+    // تشغيل الدالة عند فتح الصفحة
+    loadOrders();
+</script>
+
+</body>
+</html>

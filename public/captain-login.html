@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>دخول الكابتن | وَصِّلِي</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            width: 300px;
+            border-radius: 5px;
+        }
+        h2 {
+            text-align: center;
+            color: #0a8754;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        button {
+            background: #0a8754;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>دخول الكابتن</h2>
+
+    <input type="text" id="phone" placeholder="رقم الهاتف">
+    <input type="password" id="password" placeholder="كلمة المرور">
+
+    <button onclick="login()">دخول</button>
+
+    <div class="error" id="error"></div>
+</div>
+
+<script>
+function login() {
+    const phone = document.getElementById('phone').value;
+    const password = document.getElementById('password').value;
+
+    fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ phone, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token && data.user.role === 'captain') {
+            localStorage.setItem('captainToken', data.token);
+            window.location.href = 'captain-orders.html';
+        } else {
+            document.getElementById('error').innerText =
+                data.message || 'بيانات غير صحيحة';
+        }
+    })
+    .catch(() => {
+        document.getElementById('error').innerText = 'خطأ في الاتصال بالسيرفر';
+    });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+/* client/style.css */
+:root {
+    --primary: #0a8754;      /* أخضر وصلي المميز */
+    --primary-dark: #065f3a;
+    --secondary: #2c3e50;    /* كحلي غامق للنصوص */
+    --accent: #f39c12;       /* برتقالي للتنبيهات */
+    --light: #f8f9fa;
+    --dark: #1a1a1a;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--light);
+    color: var(--secondary);
+    direction: rtl;
+    line-height: 1.6;
+}
+
+/* --- 1. تعديل الهيدر واللوجو --- */
+header {
+    background: white;
+    padding: 0 5%; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 90px; /* 👈 زيادة الارتفاع عشان اللوجو يكبر */
+    box-sizing: border-box;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    height: 100%;
+}
+
+.logo img {
+    max-height: 70px;   /* 👈 تكبير اللوجو ليكون واضحاً */
+    width: auto;        
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+/* روابط القائمة */
+.nav-links a {
+    text-decoration: none;
+    color: var(--secondary);
+    margin-left: 20px;
+    font-weight: 600; /* تغميق الخط قليلاً */
+    font-size: 1.1rem;
+    transition: 0.3s;
+}
+
+.nav-links a:hover { color: var(--primary); }
+
+.btn-main {
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-main:hover { background: var(--primary-dark); }
+
+/* --- 2. تعديل صورة الخلفية (Hero) --- */
+.hero {
+    /* 👇 صورة كابتن توصيل حقيقية مع طبقة سوداء شفافة لتوضيح النص */
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1616400619175-5beda3a17896?auto=format&fit=crop&w=1500&q=80');
+    background-size: cover;
+    background-position: center;
+    height: 85vh; /* زيادة الارتفاع قليلاً */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+
+.hero h1 { 
+    font-size: 4rem; /* تكبير العنوان */
+    margin-bottom: 15px; 
+    font-weight: 800; 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* ظل للنص ليبرز */
+}
+
+.hero p { 
+    font-size: 1.5rem; 
+    margin-bottom: 40px; 
+    opacity: 1;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
+
+.cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+.btn-hero {
+    padding: 15px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-client { background: var(--primary); color: white; border: 2px solid var(--primary); }
+.btn-client:hover { background: transparent; border-color: white; }
+
+.btn-captain { background: white; color: var(--primary); border: 2px solid white; }
+.btn-captain:hover { background: transparent; color: white; }
+
+/* المميزات */
+.features { padding: 80px 5%; text-align: center; background: white; }
+.features h2 { font-size: 2.5rem; color: var(--secondary); margin-bottom: 50px; font-weight: 800; }
+
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+
+.feature-card { 
+    background: #fff; 
+    padding: 40px 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+    transition: 0.3s;
+    border: 1px solid #eee;
+}
+
+.feature-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+
+.feature-icon { font-size: 50px; margin-bottom: 20px; display: inline-block; }
+
+/* الفوتر */
+footer { background: var(--secondary); color: white; text-align: center; padding: 30px; margin-top: 0; }
+
+/* تحسينات للموبايل */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .nav-links { display: none; } 
+    .hero { height: 70vh; }
+    header { height: 70px; padding: 0 15px; } /* تصغير الهيدر في الموبايل */
+    .logo img { max-height: 50px; }
+}
+
+/* --- تنسيقات النماذج والداشبورد (كما هي) --- */
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* خلفية صفحة الدخول تكون مختلفة وبسيطة */
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1617347454431-f49d7ff5c3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80');
+    background-size: cover;
+    background-position: center;
+}
+
+.auth-box {
+    background: white;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+.auth-box h2 { color: var(--secondary); margin-bottom: 20px; font-family: 'Cairo', sans-serif; }
+
+.input-group { margin-bottom: 15px; text-align: right; }
+.input-group label { display: block; margin-bottom: 5px; font-weight: bold; color: var(--secondary); }
+
+.btn-block { width: 100%; padding: 12px; font-size: 1.1rem; border: none; cursor: pointer; border-radius: 8px; font-family: 'Cairo', sans-serif; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-dark); }
+
+.dashboard-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+.dashboard-header { 
+    background: white; padding: 20px; border-radius: 15px; box-shadow: var(--shadow); 
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
+}
+.user-welcome { font-weight: bold; font-size: 1.1rem; color: var(--secondary); }
+
+.form-card { background: white; padding: 30px; border-radius: 15px; box-shadow: var(--shadow); }
+.card-header { border-bottom: 2px solid #f4f4f4; padding-bottom: 15px; margin-bottom: 20px; }
+.card-header h3 { margin: 0; color: var(--primary); font-family: 'Cairo', sans-serif; }
+
+/* تحسينات الحقول */
+.input-group input, 
+.input-group textarea, 
+.input-group select,
+.location-group input, 
+.price-box input, 
+.price-box select {
+    width: 100%;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 12px 15px;
+    font-size: 15px;
+    font-family: 'Cairo', sans-serif;
+    transition: all 0.3s ease;
+    background-color: #fdfdfd;
+    box-sizing: border-box;
+}
+
+.input-group input:focus, 
+.input-group textarea:focus, 
+.input-group select:focus,
+.location-group input:focus, 
+.price-box input:focus, 
+.price-box select:focus {
+    border-color: var(--primary);
+    background-color: #fff;
+    box-shadow: 0 4px 10px rgba(10, 135, 84, 0.15);
+    outline: none;
+}
+
+.sub-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 12px;
+}
+
+.sub-inputs input {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #ffffff;
+}
+
+.price-box {
+    background: linear-gradient(to left, #f1f8f6, #ffffff);
+    border: 1px solid #c3e6cb;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+/* --- تنسيقات قسم تواصل معنا --- */
+.contact-section {
+    padding: 80px 5%;
+    text-align: center;
+    background-color: #f8f9fa; /* لون خلفية فاتح ومريح */
+}
+
+.contact-section h2 {
+    font-size: 2.5rem;
+    color: var(--secondary);
+    margin-bottom: 10px;
+}
+
+.contact-section p {
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 1.1rem;
+}
+
+.contact-grid {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.contact-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    width: 300px;
+    text-decoration: none;
+    color: var(--secondary);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.contact-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    border-color: var(--primary);
+}
+
+.contact-card .icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.contact-card h3 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.contact-card p {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+    direction: ltr; /* عشان الأرقام تظهر صح */
+}
+
+.link-text {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* تمييز بسيط لبطاقة الواتساب */
+.whatsapp-card:hover .link-text {
+    color: #25D366; /* لون واتساب الأخضر */
+}
