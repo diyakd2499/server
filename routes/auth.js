@@ -12,7 +12,6 @@ const transporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS  // سيقرأ من Render
     }
 });
-});
 
 // @route   POST /api/auth/register
 router.post('/register', async (req, res) => {
