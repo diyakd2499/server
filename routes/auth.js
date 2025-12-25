@@ -8,9 +8,10 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'wassili249@gmail.com', 
-        pass: 'daha itln qkqp bqjr' // 🔴 ضع كلمة مرور التطبيقات هنا
+        user: process.env.EMAIL_USER, // سيقرأ من Render
+        pass: process.env.EMAIL_PASS  // سيقرأ من Render
     }
+});
 });
 
 // @route   POST /api/auth/register
