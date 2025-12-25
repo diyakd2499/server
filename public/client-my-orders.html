@@ -147,7 +147,7 @@
         if(!confirm("هل أنت متأكد من إلغاء هذا الطلب؟")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+            const res = await fetch(`/api/orders/${orderId}/cancel`, {
                 method: 'PUT',
                 headers: { 'Authorization': 'Bearer ' + token }
             });
