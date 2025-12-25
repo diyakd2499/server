@@ -128,7 +128,7 @@
         async function loadDashboard() {
             try {
                 // 1. جلب الإحصائيات والطلبات
-                const resStats = await fetch('http://localhost:5000/api/admin/dashboard', {
+                const resStats = await fetch('/api/admin/dashboard', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 
@@ -170,7 +170,7 @@
         // جلب المستخدمين (لجدول الإدارة)
         async function loadUsers() {
             try {
-                const resUsers = await fetch('http://localhost:5000/api/admin/users', {
+                const resUsers = await fetch('/api/admin/users', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 const users = await resUsers.json();
@@ -215,7 +215,7 @@
             if(!confirm("هل أنت متأكد من تغيير حالة هذا المستخدم؟")) return;
 
             try {
-                const res = await fetch(`http://localhost:5000/api/admin/user/${id}/status`, {
+                const res = await fetch(`/api/admin/user/${id}/status`, {
                     method: 'PUT',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
