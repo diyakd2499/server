@@ -126,7 +126,7 @@
         const email = document.getElementById('email').value;
         const code = document.getElementById('verificationCode').value;
         try {
-            const res = await fetch('http://localhost:5000/api/auth/verify-email', {
+            const res = await fetch('/api/auth/verify-email', {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ email, code })
             });
