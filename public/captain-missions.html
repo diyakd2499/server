@@ -80,7 +80,7 @@
             if(!confirm("هل استلمت المبلغ وسلمت الطلب؟")) return;
 
             try {
-                const res = await fetch(`http://localhost:5000/api/orders/${orderId}/deliver`, {
+                const res = await fetch(`/api/orders/${orderId}/deliver`, {
                     method: 'PUT',
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
