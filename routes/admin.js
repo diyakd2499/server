@@ -11,7 +11,7 @@ const adminOnly = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
     } else {
-        res.status(403).json({ message: 'غير مسموح! هذه المنطقة للأدمن فقط 🚫' });
+        res.status(403).json({ message: 'Forbidden: This area is for admins only' });
     }
 };
 
@@ -20,19 +20,16 @@ const adminOnly = (req, res, next) => {
 // =========================================================
 
 // @route   GET /api/admin/dashboard
-// @desc    جلب إحصائيات شاملة للنظام
+// @desc    Get comprehensive system statistics
 router.get('/dashboard', protect, adminOnly, async (req, res) => {
     try {
-        // 1. حساب الأعداد
         const captainsCount = await User.countDocuments({ role: 'captain' });
-        const customersCount = await User.countDocuments({ role: { $in: ['client', 'customer'] } }); 
+        const customersCount = await User.countDocuments({ role: { $in: ['client', 'customer'] } });
         const ordersCount = await Order.countDocuments({});
 
-        // 2. حساب الأرباح (من الطلبات Delivered فقط)
         const deliveredOrders = await Order.find({ status: 'delivered' });
         const totalRevenue = deliveredOrders.reduce((acc, order) => acc + order.price, 0);
 
-        // 3. آخر 5 طلبات
         const recentOrders = await Order.find()
             .populate('customer', 'name')
             .populate('captain', 'name')
@@ -51,7 +48,22 @@ router.get('/dashboard', protect, adminOnly, async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'خطأ في السيرفر' });
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// @route   GET /api/admin/user/:id
+// @desc    Get user by ID
+router.get('/user/:id', protect, adminOnly, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
@@ -60,58 +72,52 @@ router.get('/dashboard', protect, adminOnly, async (req, res) => {
 // =========================================================
 
 // @route   GET /api/admin/users
-// @desc    جلب كل المستخدمين
+// @desc    Get all users
 router.get('/users', protect, adminOnly, async (req, res) => {
     try {
         const users = await User.find().select('-password');
         res.json(users);
     } catch (error) {
-        res.status(500).json({ message: 'خطأ في السيرفر' });
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
 // @route   GET /api/admin/captains
-// @desc    جلب كل الكباتن فقط
+// @desc    Get all captains
 router.get('/captains', protect, adminOnly, async (req, res) => {
     try {
         const captains = await User.find({ role: 'captain' }).select('-password');
         res.json(captains);
     } catch (error) {
-        res.status(500).json({ message: 'خطأ في السيرفر' });
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
 // @route   PUT /api/admin/user/:id/status
-// @desc    تفعيل / تعطيل مستخدم
+// @desc    Activate/deactivate a user
 router.put('/user/:id/status', protect, adminOnly, async (req, res) => {
     try {
-        // ❌ منع الأدمن من تعطيل نفسه (حماية ذكية منك)
         if (req.user._id.toString() === req.params.id) {
-            return res.status(400).json({ message: 'لا يمكنك تعطيل حسابك' });
+            return res.status(400).json({ message: 'You cannot deactivate your own account' });
         }
 
         const user = await User.findById(req.params.id);
 
         if (!user) {
-            return res.status(404).json({ message: 'المستخدم غير موجود' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // عكس الحالة (إذا كان مفعل يصير معطل، والعكس)
-        user.isActive = !user.isActive; 
-        
-        // حفظ التغيير (تأكد أن حقل isActive موجود في User Schema، لو لم يكن موجوداً سيعتبره مفعل دائماً)
-        // إذا لم تقم بإضافته للمودل، سيعمل الكود لكن لن يحفظ شيئاً. 
-        // سأفترض أنك أضفته أو ستضيفه لاحقاً، الكود سليم 100%.
+        user.isActive = !user.isActive;
         await user.save();
 
         res.json({
-            message: `تم ${user.isActive ? 'تفعيل' : 'تعطيل'} المستخدم بنجاح`,
+            message: `User has been successfully ${user.isActive ? 'activated' : 'deactivated'}`,
             isActive: user.isActive,
         });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'خطأ في السيرفر' });
+        res.status(500).json({ message: 'Server error' });
     }
 });
 
