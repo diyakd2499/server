@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المادة | كلية تقنية المعلومات</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    /* Dark Mode */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark .card {
+      background: #1e1e1e;
+    }
+
+    body.dark .card-title {
+      color: #90caf9;
+    }
+
+    body.dark .main-header {
+      background: #0a2540;
+    }
+
+    body.dark .main-footer {
+      color: #aaa;
+    }
+
+
+    body {
+      margin: 0;
+      background: #f4f6f8;
+      min-height: 100vh;
+      transition: 0.3s;
+    }
+
+    /* ===== Dark Mode ===== */
+    body.dark {
+      background: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark .card {
+      background: #1e1e1e;
+    }
+
+    body.dark .card-title {
+      color: #90caf9;
+    }
+
+    body.dark .main-header {
+      background: #0a2540;
+    }
+
+    body.dark .main-footer {
+      color: #aaa;
+    }
+
+    /* ===== Header ===== */
+    .main-header {
+      background: #0d3b66;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo {
+      width: 50px;
+      height: 50px;
+    }
+
+    .header-title strong {
+      font-size: 16px;
+    }
+
+    .header-title small {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .back-btn {
+      background: white;
+      color: #0d3b66;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* ===== Content ===== */
+    .container {
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .subject-header {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .subject-header h2 {
+      margin: 0;
+      color: #0d3b66;
+    }
+
+    /* ===== Section ===== */
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: #0d3b66;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .controls input,
+    .controls select {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    /* ===== Cards ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+    }
+
+   .main-footer {
+      margin-top: 40px;
+      padding: 15px;
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+    }
+
+    body.dark .main-footer {
+      color: #aaa;
+    }
+
+
+    .btn {
+      background: white;
+      color: #0d3b66;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      min-height: 44px;
+    }
+
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #0d3b66;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 8px;
+      text-decoration: none;
+      color: #1e90ff;
+      font-size: 14px;
+    }
+
+    .empty {
+      color: gray;
+    }
+
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ===== Header ===== -->
+<header class="main-header">
+  <div class="header-left">
+    <img src="assets/logo.png" class="logo">
+    <div class="header-title">
+      <strong>كلية تقنية المعلومات</strong><br>
+      <small>جامعة النصر التقنية</small>
+    </div>
+  </div>
+
+  <button class="back-btn" onclick="history.back()">⬅ رجوع</button>
+    <button class="btn" onclick="toggleDark()">🌙</button>
+</header>
+
+<div class="container">
+  <div class="subject-header">
+    <h2 id="subjectName">المادة</h2>
+  </div>
+
+  <!-- المحاضرات -->
+  <div class="section">
+    <div class="section-title">🎓 المحاضرات</div>
+
+    <div class="controls">
+      <input
+        type="text"
+        id="searchLecture"
+        placeholder="🔍 ابحث عن محاضرة"
+        onkeyup="filterLectures()"
+      >
+      <select id="sortSelect">
+        <option value="new">الأحدث أولاً</option>
+        <option value="old">الأقدم أولاً</option>
+      </select>
+    </div>
+
+    <div class="grid" id="lectures"></div>
+  </div>
+
+  <!-- المراجع -->
+  <div class="section">
+    <div class="section-title">📚 المراجع</div>
+    <div class="grid" id="references"></div>
+  </div>
+</div>
+
+<footer class="main-footer">
+  إنشاء: <strong>ضياء الدين إبراهيم</strong> —
+  حقوق النشر © <span id="year"></span> جامعة النصر التقنية
+</footer>
+
+<script>
+  document.getElementById("year").innerText =
+    new Date().getFullYear();
+
+  const token = localStorage.getItem("token");
+  if (!token) location.href = "login.html";
+
+  // إعداد عنوان الخادم الأساسي - يمكن تغييره ليتناسب مع بيئة التشغيل
+  const API_BASE_URL = "http://localhost:5000";
+
+  const subjectId = new URLSearchParams(location.search).get("id");
+  let lecturesData = [];
+
+  const lecturesEl = document.getElementById("lectures");
+
+  function renderLectures(data) {
+    lecturesEl.innerHTML = "";
+    if (data.length === 0) {
+      lecturesEl.innerHTML = "<p class='empty'>لا توجد محاضرات</p>";
+      return;
+    }
+
+    data.forEach(l => {
+      lecturesEl.innerHTML += `
+        <div class="card">
+          <div class="card-title">${l.title}</div>
+          ${l.videoUrl ? `<a href="${l.videoUrl}" target="_blank">🎥 مشاهدة الفيديو</a><br>` : ""}
+          ${l.file ? `<a href="${API_BASE_URL}/uploads/lectures/${l.file}" target="_blank">📂 تحميل الملف</a>` : ""}
+        </div>
+      `;
+    });
+  }
+
+  function applyFilters() {
+    const q = document.getElementById("searchLecture").value.toLowerCase();
+    const sort = document.getElementById("sortSelect").value;
+
+    let filtered = lecturesData.filter(l =>
+      l.title.toLowerCase().includes(q)
+    );
+
+    filtered.sort((a,b) =>
+      sort === "new"
+        ? new Date(b.createdAt) - new Date(a.createdAt)
+        : new Date(a.createdAt) - new Date(b.createdAt)
+    );
+
+    renderLectures(filtered);
+  }
+
+  async function loadLectures() {
+    if (!subjectId || subjectId === "null" || subjectId === "undefined") {
+      console.error("خطأ: لم يتم العثور على معرف المادة في الرابط");
+      lecturesEl.innerHTML = "<p class='empty'>خطأ: لم يتم تحديد المادة بشكل صحيح. يرجى العودة لصفحة المواد واختيار مادة.</p>";
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/lectures/by-subject/${subjectId}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!res.ok) throw new Error("فشل في جلب البيانات من الخادم");
+
+      const data = await res.json();
+      lecturesData = Array.isArray(data) ? data : [];
+      applyFilters();
+    } catch (err) {
+      console.error("Error loading lectures:", err);
+      lecturesEl.innerHTML = "<p class='empty'>خطأ في تحميل المحاضرات. تأكد من اتصالك بالخادم.</p>";
+    }
+  }
+
+  async function loadSubject() {
+    if (!subjectId || subjectId === "null" || subjectId === "undefined") return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/subjects/${subjectId}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!res.ok) return;
+
+      const subject = await res.json();
+      if (subject && subject.name) {
+        document.getElementById("subjectName").innerText = subject.name;
+        document.title = subject.name + " | كلية تقنية المعلومات";
+      }
+    } catch (err) {
+      console.error("Error loading subject:", err);
+    }
+  }
+
+  async function loadReferences() {
+    if (!subjectId || subjectId === "null" || subjectId === "undefined") {
+      document.getElementById("references").innerHTML = "<p class='empty'>خطأ في تحديد المادة</p>";
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/references/by-subject/${subjectId}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      if (!res.ok) throw new Error("فشل في جلب المراجع");
+
+      const data = await res.json();
+      const container = document.getElementById("references");
+      container.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        container.innerHTML = "<p class='empty'>لا توجد مراجع</p>";
+        return;
+      }
+
+      data.forEach(r => {
+        container.innerHTML += `
+          <div class="card">
+            <div class="card-title">${r.title}</div>
+            ${r.link ? `<a href="${r.link}" target="_blank">🔗 فتح الرابط</a><br>` : ""}
+            ${r.file ? `<a href="${API_BASE_URL}/uploads/lectures/${r.file}" target="_blank">📂 تحميل الملف</a>` : ""}
+          </div>
+        `;
+      });
+    } catch (err) {
+      console.error("Error loading references:", err);
+      document.getElementById("references").innerHTML = "<p class='empty'>خطأ في تحميل المراجع</p>";
+    }
+  }
+
+  document.getElementById("searchLecture").addEventListener("input", applyFilters);
+  document.getElementById("sortSelect").addEventListener("change", applyFilters);
+
+  loadSubject();
+  loadLectures();
+  loadReferences();
+
+   /* ===== Dark Mode ===== */
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+    localStorage.setItem(
+      "darkMode",
+      document.body.classList.contains("dark")
+    );
+  }
+
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark");
+  }
+</script>
+
+</body>
+</html>
